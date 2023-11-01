@@ -1,7 +1,8 @@
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 
-from src.constants import AllActions
-from src.schemas import Template, Form, ActionsFormData
+from src.constants import AllActions, Status
+from src.schemas import Template, Form, ActionsForm
 from src.google.actions import actions as google_actions
 from src.google.templates import templates as google_templates
 from src.jira.actions import actions as jira_actions
@@ -21,11 +22,13 @@ def get_template(action_name: AllActions) -> Template:
     return all_templates.get(action_name.value)()
 
 
-@router.post("/forms/apply")
-def apply_form(data: Form) -> ActionsFormData:
+@router.post("/forms/apply", response_model=ActionsForm)
+def apply_form(data: Form):
     """Applies the form."""
     result = all_actions.get(data.data.action_name)(data.model_dump())
-    return result
+    if result.data.status == Status.error:
+        return JSONResponse(content=result.model_dump(), status_code=400)
+    return JSONResponse(content=result.model_dump(), status_code=200)
 
 
 @router.post("/forms/fill")

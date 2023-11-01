@@ -131,3 +131,7 @@ class ActionsForm(BaseModel):
     data: ActionsFormData = Field(
         ..., description="The data of the form", alias="data"
     )
+
+
+class BaseFieldValidations(BaseModel):
+    access_token: str = Field(..., description="The access token")

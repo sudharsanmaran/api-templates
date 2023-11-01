@@ -41,3 +41,4 @@ src/__pycache__/*
 src/google/__pycache__/*
 .vscode/*
 .vscode/settings.json
+src/test

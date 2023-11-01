@@ -6,5 +6,5 @@ def create_project():
 
 
 actions = {
-    AllActions.google_send_email.value: create_project,
+    AllActions.jira_create_project: create_project,
 }
