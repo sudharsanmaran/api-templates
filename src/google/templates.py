@@ -68,7 +68,7 @@ def from_email(
     value: str = "",
     label="From Email",
     type="input",
-    required=False,
+    required=True,
     default="",
     options=[],
     validator=REGEX.SINGLE_EMAIL,
@@ -233,7 +233,16 @@ def access_token(
 
 def send_email():
     id = 1
-    fields = [to(), from_email(), cc(), bcc(), subject(), body(), scope()]
+    fields = [
+        access_token(),
+        to(),
+        from_email(),
+        cc(),
+        bcc(),
+        subject(),
+        body(),
+        scope(),
+    ]
 
     template = Template(
         id=id,
