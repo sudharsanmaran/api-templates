@@ -111,5 +111,5 @@ fields = {
 }
 
 templates = {
-    AllActions.twitter_read_tweet: send_tweet
+    [AllActions.twitter_read_tweet, AllActions.twitter_write_tweet, AllActions.twitter_users_read]: send_tweet
 }
