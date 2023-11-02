@@ -1,16 +1,26 @@
-import requests
+import base64
+from typing import List
+from email.message import EmailMessage
+import logging
+from googleapiclient.discovery import build
+from google.oauth2.credentials import Credentials
+from googleapiclient.errors import Error
+
+
+logger = logging.getLogger(__name__)
 
 
 class GmailClient:
     def send_email(
         self,
         access_token,
-        to,
+        to: List[str],
+        from_email,
         subject,
         body,
         attachments=None,
-        cc=None,
-        bcc=None,
+        cc: List[str] = [],
+        bcc: List[str] = [],
     ):
         """Sends an email using the Gmail API.
 
@@ -31,29 +41,40 @@ class GmailClient:
             A JSON object representing the sent email.
         """
 
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
-        }
+        try:
+            credentials = Credentials(access_token)
+            service = build("gmail", "v1", credentials=credentials)
 
-        message = {"to": to, "subject": subject, "body": body}
+            message = EmailMessage()
 
-        if cc:
-            message["cc"] = cc
+            message.set_content(body)
 
-        if bcc:
-            message["bcc"] = bcc
+            message["To"] = to
+            message["From"] = from_email
+            message["Subject"] = subject
+            if cc:
+                message["Cc"] = cc
+            if bcc:
+                message["Bcc"] = bcc
 
-        if attachments:
-            message["attachments"] = attachments
+            encoded_message_bytes = message.as_bytes()
+            encoded_message = base64.urlsafe_b64encode(
+                encoded_message_bytes
+            ).decode()
 
-        response = requests.post(
-            "https://www.googleapis.com/gmail/v1/users/me/messages",
-            headers=headers,
-            json=message,
-        )
+            message_to_send = {"raw": encoded_message}
 
-        return response.json()
+            send_message = (
+                service.users()
+                .messages()
+                .send(userId="me", body=message_to_send)
+                .execute()
+            )
+            logger.info(f'Message Id: {send_message["id"]}')
+        except Error as error:
+            logger.error(error)
+            raise error
+        return send_message
 
 
 class CalendarClient:
@@ -72,25 +93,27 @@ class CalendarClient:
             A JSON object representing the created event.
         """
 
-        headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
-        }
+        try:
+            credentials = Credentials(access_token)
+            service = build("calendar", "v3", credentials=credentials)
 
-        event = {
-            "summary": summary,
-            "description": description,
-            "start": start,
-            "end": end,
-        }
+            event = {
+                "summary": summary,
+                "description": description,
+                "start": {"dateTime": start, "timeZone": "Asia/Kolkata"},
+                "end": {"dateTime": end, "timeZone": "Asia/Kolkata"},
+            }
 
-        response = requests.post(
-            "https://www.googleapis.com/calendar/v3/calendars/primary/events",
-            headers=headers,
-            json=event,
-        )
-
-        return response.json()
+            event = (
+                service.events()
+                .insert(calendarId="primary", body=event)
+                .execute()
+            )
+            logger.info(f'Event Id: {event["id"]}')
+        except Error as error:
+            logger.error(error)
+            raise error
+        return event
 
 
 class Client(GmailClient, CalendarClient):

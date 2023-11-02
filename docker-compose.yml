@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eagle-bot-api-automation-templates
+    image: sudharsanmaran/eagle-bot-api-templates:v1.0
+    restart: on-failure
+
+    ports:
+      - "8003:8003"
+
+    volumes:
+      - .:/app
