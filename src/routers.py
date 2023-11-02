@@ -5,12 +5,14 @@ from src.constants import AllActions, Status
 from src.schemas import Template, Form, ActionsForm
 from src.google.actions import actions as google_actions
 from src.google.templates import templates as google_templates
+from src.microsoft.actions import actions as microsoft_actions
+from src.microsoft.templates import templates as microsoft_templates
 from src.jira.actions import actions as jira_actions
 from src.jira.templates import templates as jira_templates
 
-all_actions = {**google_actions, **jira_actions}
+all_actions = {**google_actions, **jira_actions, **microsoft_actions}
 
-all_templates = {**google_templates, **jira_templates}
+all_templates = {**google_templates, **jira_templates, **microsoft_templates}
 
 
 router = APIRouter(prefix="/api/v1")
