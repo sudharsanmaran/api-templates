@@ -1,7 +1,7 @@
 import requests
 from fastapi.encoders import jsonable_encoder
 
-from src.microsoft.utils import generateEmailRecipient, generateBody
+from src.microsoft.utils import generateEmailRecipient, generateBody, del_none
 
 
 class MSGraphClient:
@@ -41,29 +41,35 @@ class MSGraphClient:
             "Content-Type": "application/json",
         }
         request_object = dict()
+        message = dict()
 
-        request_object["toRecipients"] = jsonable_encoder(generateEmailRecipient(toRecipients))
-        request_object["subject"] = subject
-        request_object["body"] = jsonable_encoder(generateBody(body_content_type, body_content))
+        print('Came here')
+
+        message["toRecipients"] = [del_none(jsonable_encoder(generateEmailRecipient(toRecipients)))]
+        message["subject"] = subject
+        message["body"] = del_none(jsonable_encoder(generateBody(body_content_type, body_content)))
 
         if ccRecipients:
-            request_object["ccRecipients"] = jsonable_encoder(generateEmailRecipient(ccRecipients))
+            message["ccRecipients"] = [del_none(jsonable_encoder(generateEmailRecipient(ccRecipients)))]
 
         if bccRecipients:
-            request_object["bccRecipients"] = jsonable_encoder(generateEmailRecipient(bccRecipients))
+            message["bccRecipients"] = [del_none(jsonable_encoder(generateEmailRecipient(bccRecipients)))]
 
         if from_email:
-            request_object["from"] = jsonable_encoder(generateEmailRecipient(from_email))
+            message["from"] = del_none(jsonable_encoder(generateEmailRecipient(from_email)))
+
+        request_object['message'] = message
         if saveToSentItems:
             request_object["saveToSentItems"] = bool(saveToSentItems)
 
         print(request_object)
 
         response = requests.post(
-            "https://graph.microsoft.com/v1.0/me/sendMail",
+            "https://graph.microsoft.com/v1.0/me/microsoft.graph.sendMail",
             headers=headers,
             json=request_object,
         )
+        print(response.json())
 
         return response.json()
 

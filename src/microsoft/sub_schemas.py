@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
 class EmailAddress(BaseModel):
@@ -8,7 +8,7 @@ class EmailAddress(BaseModel):
 
 
 class Recipient(BaseModel):
-    email_address: Optional[EmailAddress] = None
+    emailAddress: EmailAddress = None
 
 
 class ItemBody(BaseModel):

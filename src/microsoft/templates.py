@@ -30,7 +30,7 @@ def create_field_template(
 
 
 def send_email():
-    scenario = 'google_email_send'
+    scenario = 'Mail.Send'
     scope = create_field_template(
         field_name='scope',
         value=SCOPES[AllActions.microsoft_send_email],
@@ -43,7 +43,7 @@ def send_email():
         label='Access Token',
         type_of='input',
         required=True,
-        scenario='google_credentials',
+        scenario='',
     )
     toRecipients = create_field_template(
         field_name='toRecipients',
