@@ -6,7 +6,7 @@ provider = "twitter"
 
 def scope(
     field_name: str = "scope",
-    value: str = SCOPES[AllActions.twitter_read_tweet, AllActions.twitter_write_tweet, AllActions.twitter_users_read],
+    value: str = SCOPES[AllActions.twitter_write_tweet],
     label="Scope",
     type="input",
     required=False,
@@ -58,6 +58,7 @@ def access_token(
         save_to_history=save_to_history,
     )
 
+
 def text(
     field_name: str = "text",
     value: str = "",
@@ -97,11 +98,10 @@ def send_tweet():
     template = Template(
         id=id,
         provider=provider,
-        action_name=[AllActions.twitter_read_tweet,AllActions.twitter_write_tweet,AllActions.twitter_users_read],
+        action_name=AllActions.twitter_write_tweet,
         fields=fields,
     )
     return template
-
 
 
 fields = {
@@ -111,5 +111,5 @@ fields = {
 }
 
 templates = {
-    [AllActions.twitter_read_tweet, AllActions.twitter_write_tweet, AllActions.twitter_users_read]: send_tweet
+     AllActions.twitter_write_tweet: send_tweet
 }

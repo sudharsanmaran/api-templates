@@ -5,6 +5,7 @@ from src.constants import Status, AllActions
 from .validations import validate_send_tweet
 client = Client()
 
+
 def handle_error(errors, all_fields, prompt, action_name):
     # TODO: handle errors
     return get_action_form(
@@ -20,6 +21,7 @@ def handle_error(errors, all_fields, prompt, action_name):
 #     result = client.send_tweet(**body)
 #     # TODO convert result to ActionForms format
 #     return result
+
 
 def send_tweet(data: dict):
     global client
@@ -40,11 +42,16 @@ def send_tweet(data: dict):
 
     result = get_action_form(
         Status.success,
-        [AllActions.twitter_read_tweet, AllActions.twitter_write_tweet, AllActions.twitter_users_read],
+        action_name,
         prompt,
         fields,
     )
     return result
+
+
+actions = {
+    AllActions.twitter_write_tweet: send_tweet
+}
 
 
 

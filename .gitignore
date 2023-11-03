@@ -42,3 +42,5 @@ src/google/__pycache__/*
 .vscode/*
 .vscode/settings.json
 src/test
+src/twitter/text.json
+

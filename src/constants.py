@@ -26,6 +26,6 @@ class AllActions(str, Enum):
     jira_create_project = "JIRA_PROJECT_CREATE"
 
     # Twitter Actions
-    twitter_read_tweet = "TWITTER_READ_TWEET"
+    # twitter_read_tweet = "TWITTER_READ_TWEET"
     twitter_write_tweet = "TWITTER_WRITE_TWEET"
-    twitter_users_read = "TWITTER_USERS_READ"
+    # twitter_users_read = "TWITTER_USERS_READ"

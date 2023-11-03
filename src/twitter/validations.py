@@ -13,4 +13,3 @@ def validate_send_tweet(data: SendTweet):
         raise e
     return request_body
 
-
