@@ -4,6 +4,7 @@ from .constants import SCOPES
 
 provider = "twitter"
 
+
 def scope(
     field_name: str = "scope",
     value: str = SCOPES[AllActions.twitter_write_tweet],
@@ -30,6 +31,7 @@ def scope(
         priority=priority,
         save_to_history=save_to_history,
     )
+
 
 def access_token(
     field_name="access_token",
@@ -89,11 +91,7 @@ def text(
 
 def send_tweet():
     id = 1
-    fields = [
-        text(),
-        scope(),
-        access_token()
-    ]
+    fields = [text(), scope(), access_token()]
 
     template = Template(
         id=id,
@@ -110,6 +108,4 @@ fields = {
     "access_token": access_token(),
 }
 
-templates = {
-     AllActions.twitter_write_tweet: send_tweet
-}
+templates = {AllActions.twitter_write_tweet: send_tweet}

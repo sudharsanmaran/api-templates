@@ -12,4 +12,3 @@ def validate_send_tweet(data: SendTweet):
         logger.error(e.errors())
         raise e
     return request_body
-
