@@ -1,37 +1,14 @@
 import json
 from fastapi import HTTPException
 import httpx
-import urllib.parse
-from urllib.parse import urlencode, quote
-import os
-from src.jira.utils import dict2str
 
 from src.jira.constants import (
     BASE_URL_FOR_JIRA_API,
-    CONTENTTYPE,
-    JIRA_OAUTH_TOKEN_URL,
 )
 
 
 class JiraClient:
-    def __init__(self):
-        self.client_id = os.getenv("jira_CLIENT_ID")
-        self.client_secret = os.getenv("jira_CLIENT_SECRET")
-        self.redirect_uri = os.getenv("jira_REDIRECT_URI")
-
     async def _make_request(self, method, url, headers=None, data=None):
-        """Makes a request to the jira API.
-
-        Args:
-          method: The HTTP method.
-          url: The URL.
-          headers: The request headers.
-          data: The request body.
-
-        Returns:
-          The response.
-        """
-
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.request(
@@ -51,23 +28,39 @@ class JiraClient:
                     detail=details,
                 )
 
-    async def exchange_code_for_tokens(self, code):
-        payload = {
-            "code": code,
-            "client_id": self.client_id,
-            "client_secret": self.client_secret,
-            "redirect_uri": self.redirect_uri,
-            "grant_type": "authorization_code",
+    async def create_project(
+        self,
+        access_token: str,
+        resource_id: str,
+        description: str,
+        key: str,
+        name: str,
+        assigneeType: str,
+        projectTemplateKey: str,
+        projectTypeKey: str,
+        leadAccountId: str,
+    ):
+        access_token = "eyJraWQiOiJmZTM2ZThkMzZjMTA2N2RjYTgyNTg5MmEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJlZDUxZjkxMy05MTFmLTQ2Y2YtOWU5OC1lZDBmMTUwMGZjZjQiLCJzdWIiOiI3MTIwMjA6YWFhNDhiZjItODNmZi00ZTQ0LTgzNWUtNzBmOGFiZTAwNDdhIiwibmJmIjoxNjk4OTI4OTQ2LCJpc3MiOiJodHRwczovL2F1dGguYXRsYXNzaWFuLmNvbSIsImlhdCI6MTY5ODkyODk0NiwiZXhwIjoxNjk4OTMyNTQ2LCJhdWQiOiJxRmV0eGZIQ21INnlmOHBiZlN5ZzNFMzZkYmV4eXRDTyIsImh0dHBzOi8vaWQuYXRsYXNzaWFuLmNvbS91anQiOiJlNmM1YWZkZi1mMWI2LTQxNWEtYTk1Yy02ZTgzYjYzMDQ2OTciLCJodHRwczovL2F0bGFzc2lhbi5jb20vc3lzdGVtQWNjb3VudEVtYWlsIjoiZGVkYmM4ZDMtMDdmMS00ZTExLTk0NmQtMmMzYmFhMzgwMWMwQGNvbm5lY3QuYXRsYXNzaWFuLmNvbSIsImh0dHBzOi8vaWQuYXRsYXNzaWFuLmNvbS9hdGxfdG9rZW5fdHlwZSI6IkFDQ0VTUyIsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9maXJzdFBhcnR5IjpmYWxzZSwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL3ZlcmlmaWVkIjp0cnVlLCJjbGllbnRfaWQiOiJxRmV0eGZIQ21INnlmOHBiZlN5ZzNFMzZkYmV4eXRDTyIsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9zeXN0ZW1BY2NvdW50SWQiOiI3MTIwMjA6ZGE3NjkzYjYtNDI1Ny00OTdlLWI2MjQtOGU2NDFjZjExM2ViIiwidmVyaWZpZWQiOiJ0cnVlIiwiaHR0cHM6Ly9pZC5hdGxhc3NpYW4uY29tL3Byb2Nlc3NSZWdpb24iOiJ1cy13ZXN0LTIiLCJodHRwczovL2F0bGFzc2lhbi5jb20vZW1haWxEb21haW4iOiJnbWFpbC5jb20iLCJodHRwczovL2F0bGFzc2lhbi5jb20vM2xvIjp0cnVlLCJodHRwczovL2F0bGFzc2lhbi5jb20vb2F1dGhDbGllbnRJZCI6InFGZXR4ZkhDbUg2eWY4cGJmU3lnM0UzNmRiZXh5dENPIiwiaHR0cHM6Ly9pZC5hdGxhc3NpYW4uY29tL3ZlcmlmaWVkIjp0cnVlLCJzY29wZSI6Im1hbmFnZTpqaXJhLWNvbmZpZ3VyYXRpb24gbWFuYWdlOmppcmEtcHJvamVjdCBvZmZsaW5lX2FjY2VzcyByZWFkOmppcmEtdXNlciByZWFkOmppcmEtd29yayB3cml0ZTpqaXJhLXdvcmsiLCJodHRwczovL2lkLmF0bGFzc2lhbi5jb20vcmVmcmVzaF9jaGFpbl9pZCI6InFGZXR4ZkhDbUg2eWY4cGJmU3lnM0UzNmRiZXh5dENPLTcxMjAyMDphYWE0OGJmMi04M2ZmLTRlNDQtODM1ZS03MGY4YWJlMDA0N2EtMWIyOTlmY2ItMTM5NC00OThkLThhMzItMjRiZDM2MzhlYTFmIiwiaHR0cHM6Ly9pZC5hdGxhc3NpYW4uY29tL3Nlc3Npb25faWQiOiI2N2VlOTNlOS1jMzk5LTRiZGEtOWVjNC05MGRlZWU5MWNjNTMiLCJodHRwczovL2F0bGFzc2lhbi5jb20vc3lzdGVtQWNjb3VudEVtYWlsRG9tYWluIjoiY29ubmVjdC5hdGxhc3NpYW4uY29tIn0.vO5PppWN905mYIYoC4j2K8_UATaz6EyrS_S2N1bZ2WRokq8xhpR1a5GR9R3gBxIC5oL8h9RwYUKkEAGLpNTVohZhVVcaZ41Zo2H3mihqluEC2KbDuaPAqmsW_D3j45Mwki3uqoraxVKTUdUGBOJU5zUtftqvfIbO40Lw5WZ3NPiLZQy98Pjx13ZF5pHiTUkp-742qCT5CR7Wflmz6MWUGszLlLbNuYyjc2GgS3ZCu21w5OeWjl6QAtCml4nuP0rsEdM8Idwu4evRejJz2HtLyAWcCciXqv4YY2FxBzMcDJg62dfIu6XlYwPtKE1_jh1auk8MsVPs_X7O0vRVRKNn-w"
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
         }
-        headers = {"Content-Type": CONTENTTYPE["AXFORM"]}
+        data = {
+            "assigneeType": assigneeType,
+            "description": description,
+            "key": key,
+            "name": name,
+            "projectTemplateKey": projectTemplateKey,
+            "projectTypeKey": projectTypeKey,
+            "leadAccountId": leadAccountId,
+        }
 
         response = await self._make_request(
             "POST",
-            JIRA_OAUTH_TOKEN_URL,
+            BASE_URL_FOR_JIRA_API.format(resource_id) + "rest/api/3/project",
             headers=headers,
-            data=urllib.parse.urlencode(payload),
+            data=json.dumps(data),
         )
-
         return response
 
     async def get_Jira_user(self, token):
@@ -89,102 +82,15 @@ class JiraClient:
         )
         return response
 
-    async def get_consent_url(self, scope: str, err_mess: str):
-        query_params = {
-            "audience": "api.atlassian.com",
-            "client_id": self.client_id,
-            "response_type": "code",
-            "scope": scope,
-            "state": "qwerty123",
-            "prompt": "consent",
-            "redirect_uri": self.redirect_uri,
-        }
-        query_string = urlencode(query_params, quote_via=quote)
-
-        consent_url = "https://auth.atlassian.com/authorize?" + query_string
-        details = {
-            "error": err_mess,
-            "consent_url": consent_url,
-        }
-        raise HTTPException(
-            status_code=400,
-            detail=details,
-        )
-
-    async def get_jira_rotational_token(self, refresh_token: str, scopes: str):
-        data = {
-            "grant_type": "refresh_token",
-            "client_id": self.client_id,
-            "client_secret": self.client_secret,
-            "refresh_token": refresh_token,
-        }
-        headers = {"Content-Type": CONTENTTYPE["AJSON"]}
-        try:
-            response = await self._make_request(
-                method="POST",
-                url=JIRA_OAUTH_TOKEN_URL,
-                headers=headers,
-                data=json.dumps(data),
-            )
-            return response
-        except HTTPException as err:
-            if err.detail["error"] == "unauthorized_client":
-                await self.get_consent_url(
-                    dict2str(scopes), "unauthorized_client"
-                )
-            return response
-
-    async def create_project(
-        self, resource_id, jira_user_acc_id, jira_user_token, data
-    ):
-        """Creates a new project in Jira."""
-        data[
-            "projectTemplateKey"
-        ] = "com.pyxis.greenhopper.jira:gh-simplified-basic"
-        data["projectTypeKey"] = "software"
-        data["leadAccountId"] = jira_user_acc_id
-        cloudid = resource_id
-        headers = {
-            "Authorization": f"Bearer {jira_user_token}",
-            "Content-Type": "application/json",
-        }
-
+    async def get_all_project(self, token, resource_id):
+        headers = {"Authorization": f"Bearer {token}"}
         response = await self._make_request(
-            "POST",
-            BASE_URL_FOR_JIRA_API.format(cloudid) + "rest/api/3/project",
+            "GET",
+            f"https://api.atlassian.com/ex/jira/{resource_id}/rest/api/3/project/search",
             headers=headers,
-            data=json.dumps(data),
         )
-
-        return response
-
-    async def create_issue(
-        self, resource_id, jira_user_acc_id, jira_user_token, data
-    ):
-        """Creates a new issue for project in Jira."""
-        payload = {
-            "fields": {
-                "summary": data["summary"],
-                "project": {"id": data["project"]},
-                "issuetype": {"id": data["issuetype"]},
-            }
-        }
-        cloudid = resource_id
-        headers = {
-            "Authorization": f"Bearer {jira_user_token}",
-            "Content-Type": "application/json",
-        }
-
-        response = await self._make_request(
-            "POST",
-            BASE_URL_FOR_JIRA_API.format(cloudid) + "rest/api/3/issue",
-            headers=headers,
-            data=json.dumps(payload),
-        )
-
         return response
 
 
 class Client(JiraClient):
-    def __init__(self, access_token):
-        super().__init__(access_token)
+    pass

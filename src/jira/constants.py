@@ -15,25 +15,22 @@ class JiarScope(str, Enum):
 
 
 class AssTypeEnum(str, Enum):
-    UNASSIGNED = ("UNASSIGNED",)
+    UNASSIGNED = "UNASSIGNED"
     PROJECT_LEAD = "PROJECT_LEAD"
 
 
+# flake8: noqa
 class ProjTempKeyEnum(str, Enum):
     GREENHOPPER_BASIC = "com.pyxis.greenhopper.jira:gh-simplified-basic"
-    GREENHOPPER_KANBAN = (
-        "com.pyxis.greenhopper.jira:gh-simplified-agility-kanban"
-    )
-    GREENHOPPER_SCRUM = (
-        "com.pyxis.greenhopper.jira:gh-simplified-agility-scrum"
-    )
+    GREENHOPPER_KANBAN = "com.pyxis.greenhopper.jira:gh-simplified-agility-kanban"
+    GREENHOPPER_SCRUM = "com.pyxis.greenhopper.jira:gh-simplified-agility-scrum"
     GREENHOPPER_KANBAN_CLASSIC = (
         "com.pyxis.greenhopper.jira:gh-simplified-kanban-classic"
     )
-    GREENHOPPER_SCRUM_CLASSIC = (
-        "com.pyxis.greenhopper.jira:gh-simplified-scrum-classic"
-    )
+    GREENHOPPER_SCRUM_CLASSIC = "com.pyxis.greenhopper.jira:gh-simplified-scrum-classic"
 
 
 class ProjTypeKeyEnum(str, Enum):
     SOFTWARE = "software"
+    SERVICE_DESK = "service_desk"
+    BUSINESS = "business"

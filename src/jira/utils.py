@@ -10,11 +10,8 @@ def dict2str(scopes: dict) -> str:
 
 
 def seconds2currentTime(expires_in_seconds: int) -> datetime:
-    return (
-        datetime.now()
-        + timedelta(seconds=expires_in_seconds)
-        - timedelta(minutes=1)
-    )
+    # flake8: noqa
+    return datetime.now() + timedelta(seconds=expires_in_seconds) - timedelta(minutes=1)
 
 
 def get_new_resource_from(old_res, new_res):
