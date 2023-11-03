@@ -129,7 +129,7 @@ def send_email():
     template = Template(
         id=id,
         provider=provider,
-        action_name=AllActions.google_send_email,
+        action_name=AllActions.microsoft_send_email,
         fields=fields,
     )
     return template
