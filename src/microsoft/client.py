@@ -1,32 +1,36 @@
 import requests
+from fastapi.encoders import jsonable_encoder
+
+from src.microsoft.utils import generateEmailRecipient, generateBody
 
 
 class MSGraphClient:
     def send_email(
         self,
         access_token,
-        to,
+        toRecipients,
         subject,
-        body,
-        attachments=None,
-        cc=None,
-        bcc=None,
+        body_content_type,
+        body_content,
+        ccRecipients=None,
+        bccRecipients=None,
+        from_email=None,
+        saveToSentItems=None
     ):
         """Sends an email using the Gmail API.
 
         Args:
             access_token: Access token for the microsoft platform
-            to: A list of email addresses to send the email to.
+            toRecipients: A list of email addresses to send the email to.
             subject: The subject of the email.
-            body: The body of the email.
-            attachments: A list of attachments to include in the email. \
-                Each attachment should be a dictionary with the following keys:
-                * mimeType: The MIME type of the attachment.
-                * attachment: The base64 encoded attachment data.
-            cc: A list of email addresses to send the email \
+            body_content_type: The body type of email, it can be text or html
+            body_content: The body of the email
+            ccRecipients: A list of email addresses to send the email \
                 to as CC recipients.
-            bcc: A list of email addresses to send the email \
+            bccRecipients: A list of email addresses to send the email \
                 to as BCC recipients.
+            from_email: email address of sender.
+            saveToSentItems: Indicates whether to save the message in Sent Items.
 
         Returns:
             A JSON object representing the sent email.
@@ -36,23 +40,29 @@ class MSGraphClient:
             "Authorization": f"Bearer {access_token}",
             "Content-Type": "application/json",
         }
-        request_object = {}
+        request_object = dict()
 
-        message = {"toRecipients": to, "subject": subject, "body": body}
+        request_object["toRecipients"] = jsonable_encoder(generateEmailRecipient(toRecipients))
+        request_object["subject"] = subject
+        request_object["body"] = jsonable_encoder(generateBody(body_content_type, body_content))
 
-        if cc:
-            message["ccRecipients"] = cc
+        if ccRecipients:
+            request_object["ccRecipients"] = jsonable_encoder(generateEmailRecipient(ccRecipients))
 
-        if bcc:
-            message["bccRecipients"] = bcc
+        if bccRecipients:
+            request_object["bccRecipients"] = jsonable_encoder(generateEmailRecipient(bccRecipients))
 
-        if attachments:
-            message["attachments"] = attachments
+        if from_email:
+            request_object["from"] = jsonable_encoder(generateEmailRecipient(from_email))
+        if saveToSentItems:
+            request_object["saveToSentItems"] = bool(saveToSentItems)
+
+        print(request_object)
 
         response = requests.post(
             "https://graph.microsoft.com/v1.0/me/sendMail",
             headers=headers,
-            json=message,
+            json=request_object,
         )
 
         return response.json()

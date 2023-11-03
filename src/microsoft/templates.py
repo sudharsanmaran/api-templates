@@ -1,9 +1,9 @@
 from src.constants import AllActions
 from src.schemas import Template, FieldTemplate
 
-from .constants import SCOPES
+from .constants import SCOPES, REGEX
 
-provider = "microsoft"
+provider = 'microsoft'
 
 
 def create_field_template(
@@ -30,62 +30,101 @@ def create_field_template(
 
 
 def send_email():
-    # id = 1
-    scenario = "google_email_send"
+    scenario = 'google_email_send'
     scope = create_field_template(
-        field_name="scope",
+        field_name='scope',
         value=SCOPES[AllActions.microsoft_send_email],
-        label="Scope",
-        type_of="input",
+        label='Scope',
+        type_of='input',
         scenario=scenario,
     )
     access_token = create_field_template(
-        field_name="access_token",
-        label="Access Token",
-        type_of="input",
+        field_name='access_token',
+        label='Access Token',
+        type_of='input',
         required=True,
-        scenario="google_credentials",
+        scenario='google_credentials',
     )
-    to = create_field_template(
-        field_name="to",
-        label="To",
-        type_of="input",
+    toRecipients = create_field_template(
+        field_name='toRecipients',
+        label='To Recipients',
+        type_of='input',
         required=True,
         scenario=scenario,
         priority=2,
+        validator=REGEX.SINGLE_OR_MULTIPLE_EMAILS.value
+    )
+    from_email = create_field_template(
+        field_name='from_email',
+        label='From Email',
+        type_of='input',
+        required=False,
+        scenario=scenario,
+        priority=2,
+        validator=REGEX.SINGLE_OR_MULTIPLE_EMAILS.value
     )
     subject = create_field_template(
-        field_name="subject",
-        label="Subject",
-        type_of="input",
+        field_name='subject',
+        label='Subject',
+        type_of='input',
         required=True,
         scenario=scenario,
         priority=2,
     )
-    body = create_field_template(
-        field_name="body",
-        label="Body",
-        type_of="input",
+
+    body_content_type = create_field_template(
+        field_name='body_content_type',
+        label='Body Content Type',
+        type_of='checkbox',
+        required=True,
+        scenario=scenario,
+        default='Text',
+        priority=2,
+        options=['Text', 'Html']
+    )
+
+    body_content = create_field_template(
+        field_name='body_content',
+        label='Body Content',
+        type_of='input',
         required=True,
         scenario=scenario,
         priority=2,
     )
-    cc = create_field_template(
-        field_name="cc",
-        label="CC",
-        type_of="input",
+
+    ccRecipients = create_field_template(
+        field_name='ccRecipients',
+        label='CC Recipients',
+        type_of='input',
         scenario=scenario,
         priority=2,
+        validator=REGEX.SINGLE_OR_MULTIPLE_EMAILS.value
     )
-    bcc = create_field_template(
-        field_name="bcc",
-        label="BCC",
-        type_of="input",
+    bccRecipients = create_field_template(
+        field_name='bccRecipients',
+        label='BCC Recipients',
+        type_of='input',
         scenario=scenario,
         priority=2,
+        validator=REGEX.SINGLE_OR_MULTIPLE_EMAILS.value
     )
+
+    saveToSentItems = create_field_template(
+        field_name='saveToSentItems',
+        label='SaveToSentItems',
+        type_of='checkbox',
+        priority=3,
+        scenario=scenario,
+        options=['', 'False', 'True'],
+        default='True'
+
+    )
+
     id = 1
-    fields = [scope, access_token, to, subject, body, cc, bcc]
+    fields = [
+        scope, access_token, toRecipients, subject, from_email, body_content,
+        body_content_type, ccRecipients, bccRecipients, saveToSentItems
+    ]
 
     template = Template(
         id=id,
