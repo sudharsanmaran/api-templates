@@ -43,5 +43,5 @@ async def create_project(data: dict):
 
 
 actions = {
-    # AllActions.jira_create_project: create_project,
+    AllActions.jira_create_project: create_project,
 }

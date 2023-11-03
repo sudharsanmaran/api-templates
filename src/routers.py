@@ -8,8 +8,8 @@ from src.google.templates import templates as google_templates
 from src.microsoft.actions import actions as microsoft_actions
 from src.microsoft.templates import templates as microsoft_templates
 from src.jira.actions import actions as jira_actions
-
-# from src.jira.templates import templates as jira_templates
+from src.jira.templates import templates as jira_templates
+from src.jira.formfill import formfills as jira_formfill
 from src.twitter.actions import actions as twitter_actions
 from src.twitter.templates import templates as twitter_templates
 
@@ -24,7 +24,10 @@ all_templates = {
     **google_templates,
     **microsoft_templates,
     **twitter_templates,
+    **jira_templates,
 }
+
+all_fillforms = {**jira_formfill}
 
 router = APIRouter(prefix="/api/v1")
 

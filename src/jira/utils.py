@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import re
 
 
 def str2dict(scopes: str) -> dict:
@@ -19,3 +20,9 @@ def get_new_resource_from(old_res, new_res):
         ids = [str(obj.resource_id) for obj in old_res]
         return [d["id"] for d in new_res if d["id"] not in ids]
     return new_res[0]
+
+def conbine_name_id(name:str, id:str):
+    return f"{name} ({id})"
+
+def get_id_from(val: str):
+    return re.findall(r'\((.*?)\)', val)[0]

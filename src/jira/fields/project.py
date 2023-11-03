@@ -60,7 +60,7 @@ def resource_id(
 
 def scopes(
     field_name="scopes",
-    value=JiarScope.BASIC,
+    value=f"{JiarScope.BASIC} {JiarScope.WRITE_JIRA_WORK}",
     label="Scopes",
     type="input",
     required=False,

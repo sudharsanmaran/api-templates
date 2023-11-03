@@ -35,4 +35,4 @@ def create_project():
     return template
 
 
-# templates = {AllActions.jira_create_project: create_project}
+templates = {AllActions.jira_create_project: create_project}

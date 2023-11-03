@@ -37,7 +37,7 @@ class CreateProjectRequest(JiraBaseFieldValidations):
         AssTypeEnum.UNASSIGNED,
         description="The assignee type of the project",
     )
-    # leadAccountId: str = Field(
-    #     ...,
-    #     description="The account ID of the project lead",
-    # )
+    leadAccountId: str = Field(
+        ...,
+        description="The account ID of the project lead",
+    )
