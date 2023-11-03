@@ -79,7 +79,14 @@ class GmailClient:
 
 class CalendarClient:
     def create_calendar_event(
-        self, access_token, summary, description, start, end
+        self,
+        access_token,
+        summary,
+        description,
+        start,
+        end,
+        location,
+        timezone,
     ):
         """Creates a calendar event using the Calendar API.
 
@@ -100,8 +107,9 @@ class CalendarClient:
             event = {
                 "summary": summary,
                 "description": description,
-                "start": {"dateTime": start, "timeZone": "Asia/Kolkata"},
-                "end": {"dateTime": end, "timeZone": "Asia/Kolkata"},
+                "start": {"dateTime": start, "timeZone": timezone},
+                "end": {"dateTime": end, "timeZone": timezone},
+                "location": location,
             }
 
             event = (
@@ -114,6 +122,10 @@ class CalendarClient:
             logger.error(error)
             raise error
         return event
+
+
+class ContactClient:
+    pass
 
 
 class Client(GmailClient, CalendarClient):

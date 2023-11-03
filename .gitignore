@@ -44,3 +44,4 @@ src/google/__pycache__/*
 src/test
 src/twitter/text.json
 
+src/test_calendar.json

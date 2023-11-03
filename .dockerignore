@@ -36,3 +36,4 @@ deployment-docker-compose.yml
 alembic/versions/*
 
 src/twitter/text.json
+src/test
