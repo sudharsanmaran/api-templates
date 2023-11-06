@@ -65,10 +65,12 @@ class MSGraphClient:
         print(request_object)
 
         response = requests.post(
-            "https://graph.microsoft.com/v1.0/me/microsoft.graph.sendMail",
+            "https://graph.microsoft.com/v1.0/me/sendMail",
             headers=headers,
             json=request_object,
         )
+        if response.status_code == 202:
+            return {}
         print(response.json())
 
         return response.json()
