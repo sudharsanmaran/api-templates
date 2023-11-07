@@ -1,6 +1,6 @@
 import re
 from pydantic import Field, validator
-from .constants import REGEX
+from .constants import REGEX, regex_patterns
 from src.schemas import BaseFieldValidations
 
 
@@ -78,8 +78,8 @@ class CalendarEvent(BaseFieldValidations):
 
     @validator("start", "end")
     def check_date(cls, v):
-        regex = REGEX.DATETIME
-        if not re.match(regex, v):
+        pattern = regex_patterns["DATETIME"]
+        if not re.match(pattern, v):
             raise ValueError("Invalid date")
         return v
 

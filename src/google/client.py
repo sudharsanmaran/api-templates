@@ -83,33 +83,63 @@ class CalendarClient:
         access_token,
         summary,
         description,
+        attendees,
         start,
         end,
         location,
         timezone,
     ):
-        """Creates a calendar event using the Calendar API.
-
-        Args:
-            summary: The summary of the event.
-            description: The description of the event.
-            start: The start date and time of the event.
-            end: The end date and time of the event.
-
-        Returns:
-            A JSON object representing the created event.
-        """
 
         try:
             credentials = Credentials(access_token)
             service = build("calendar", "v3", credentials=credentials)
 
+                    """
+                    event = {
+        'summary': 'Google I/O 2015',
+        'location': '800 Howard St., San Francisco, CA 94103',
+        'description': 'A chance to hear more about Google\'s developer products.',
+        'start': {
+            'dateTime': '2015-05-28T09:00:00-07:00',
+            'timeZone': 'America/Los_Angeles',
+        },
+        'end': {
+            'dateTime': '2015-05-28T17:00:00-07:00',
+            'timeZone': 'America/Los_Angeles',
+        },
+        'recurrence': [
+            'RRULE:FREQ=DAILY;COUNT=2'
+        ],
+        'attendees': [
+            {'email': 'lpage@example.com'},
+            {'email': 'sbrin@example.com'},
+        ],
+        'reminders': {
+            'useDefault': False,
+            'overrides': [
+            {'method': 'email', 'minutes': 24 * 60},
+            {'method': 'popup', 'minutes': 10},
+            ],
+        },
+        }
+
+        event = service.events().insert(calendarId='primary', body=event).execute()
+                    """
+
             event = {
+                "start": {
+                    "dateTime": start,
+                    "timeZone": timezone,
+                },
+                "end": {
+                    "dateTime": end,
+                    "timeZone": timezone,
+                },
                 "summary": summary,
                 "description": description,
-                "start": {"dateTime": start, "timeZone": timezone},
-                "end": {"dateTime": end, "timeZone": timezone},
+                "attendees": [{"email": attendee} for attendee in attendees],
                 "location": location,
+
             }
 
             event = (

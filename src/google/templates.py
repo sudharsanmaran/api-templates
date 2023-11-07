@@ -1,7 +1,7 @@
 from src.constants import AllActions
 from src.schemas import Template, FieldTemplate
 
-from .constants import REGEX, SCOPES
+from .constants import REGEX, SCOPES, regex_patterns
 
 
 provider = "google"
@@ -290,7 +290,7 @@ def start(
     required=True,
     default="",
     options=[],
-    validator="",
+    validator=regex_patterns['DATETIME'],
     scenario="google_calendar_event_create",
     priority=2,
     save_to_history=False,
@@ -318,7 +318,7 @@ def end(
     required=True,
     default="",
     options=[],
-    validator="",
+    validator=regex_patterns['DATETIME'],
     scenario="google_calendar_event_create",
     priority=2,
     save_to_history=False,
@@ -534,31 +534,31 @@ def recurrence(
 #     )
 
 
-# def create_calendar_event():
-#     id = 2
-#     fields = [
-#         access_token(),
-#         scope(
-#             value=SCOPES[AllActions.google_create_calendar_event],
-#             scenario="google_calendar_event_create",
-#         ),
-#         start(),
-#         end(),
-#         attendees(),
-#         timezone(),
-#         summary(),
-#         description(),
-#         location(),
-#         # recurrence(),
-#     ]
+def create_calendar_event():
+    id = 2
+    fields = [
+        access_token(),
+        scope(
+            value=SCOPES[AllActions.google_create_calendar_event],
+            scenario="google_calendar_event_create",
+        ),
+        start(),
+        end(),
+        attendees(),
+        timezone(),
+        summary(),
+        description(),
+        location(),
+        # recurrence(),
+    ]
 
-#     template = Template(
-#         id=id,
-#         provider=provider,
-#         action_name=AllActions.google_create_calendar_event,
-#         fields=fields,
-#     )
-#     return template
+    template = Template(
+        id=id,
+        provider=provider,
+        action_name=AllActions.google_create_calendar_event,
+        fields=fields,
+    )
+    return template
 
 
 fields = {
@@ -573,5 +573,5 @@ fields = {
 
 templates = {
     AllActions.google_send_email: send_email,
-    # AllActions.google_create_calendar_event: create_calendar_event,
+    AllActions.google_create_calendar_event: create_calendar_event,
 }
