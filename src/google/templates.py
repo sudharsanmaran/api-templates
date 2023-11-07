@@ -231,6 +231,34 @@ def access_token(
     )
 
 
+def signature(
+    field_name="signature",
+    value="",
+    label="Signature",
+    type="input",
+    required=True,
+    default="",
+    options=[],
+    validator="",
+    scenario="google_email_send",
+    priority=1,
+    save_to_history=False,
+) -> FieldTemplate:
+    return access_token(
+        field_name=field_name,
+        value=value,
+        label=label,
+        type=type,
+        required=required,
+        default=default,
+        options=options,
+        validator=validator,
+        scenario=scenario,
+        priority=priority,
+        save_to_history=save_to_history,
+    )
+
+
 def send_email():
     id = 1
     fields = [
@@ -242,6 +270,7 @@ def send_email():
         subject(),
         body(),
         scope(),
+        signature(),
     ]
 
     template = Template(

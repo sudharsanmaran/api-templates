@@ -1,7 +1,7 @@
 from typing import List
 from pydantic import BaseModel, Field
 
-from src.constants import Status, Types
+from src.constants import AllActions, Status, Types
 
 
 class FieldTemplate(BaseModel):
@@ -82,7 +82,7 @@ class FormData(BaseModel):
     parent_message_id: int = Field(
         ..., description="The parent message id", alias="parent_message_id"
     )
-    action_name: str = Field(
+    action_name: AllActions = Field(
         ..., description="The name of the action", alias="action_name"
     )
     fields: list[FieldTemplate] = Field(
