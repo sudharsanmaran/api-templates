@@ -1,7 +1,7 @@
 import requests
 from fastapi.encoders import jsonable_encoder
 
-from src.microsoft.utils import generateEmailRecipient, generateBody, del_none
+from src.microsoft.utils import generateEmailRecipient, generateBody, del_none, get_date_with_time_zone
 
 
 class MSGraphClient:
@@ -74,4 +74,36 @@ class MSGraphClient:
         print(response.json())
 
         return response.json()
+
+    @staticmethod
+    def get_free_or_busy_schedule(access_token: str,
+                                  schedules: str,
+                                  start_time: str,
+                                  end_time: str,
+                                  timezone: str
+                                  ):
+
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+
+        request_object = dict()
+
+        request_object['Schedules'] = [schedules]
+        request_object['StartTime'] = jsonable_encoder(get_date_with_time_zone(start_time, timezone))
+        request_object['EndTime'] = jsonable_encoder(get_date_with_time_zone(end_time, timezone))
+
+        response = requests.post(
+            "https://graph.microsoft.com/v1.0/me/calendar/getschedule",
+            headers=headers,
+            json=request_object,
+        )
+        if response.status_code == 202:
+            return {}
+        print(response.json())
+
+        return response.json()
+
+
 

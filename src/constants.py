@@ -21,6 +21,7 @@ class AllActions(str, Enum):
     # Microsoft Actions
     microsoft_send_email = "MICROSOFT_EMAIL_SEND"
     # microsoft_create_calendar_event = "MICROSOFT_CALENDAR_EVENT_CREATE"
+    microsoft_retrieve_free_or_busy_schedule = "MICROSOFT_RETRIEVE_FREE_OR_BUSY_SCHEDULE"
 
     # Jira Actions
     jira_create_project = "JIRA_PROJECT_CREATE"

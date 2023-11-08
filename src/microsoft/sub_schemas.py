@@ -14,3 +14,8 @@ class Recipient(BaseModel):
 class ItemBody(BaseModel):
     contentType: Optional[str] = None
     content: Optional[str] = None
+
+
+class DateTimeFormat(BaseModel):
+    dateTime: Optional[str] = None
+    timeZone: Optional[str] = None

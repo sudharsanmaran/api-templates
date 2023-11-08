@@ -28,3 +28,18 @@ class SendEmail(BaseFieldValidations):
         None,
         description='Indicates whether to save the message in Sent Items.'
     )
+
+
+class GetFreeOrBusySchedule(BaseFieldValidations):
+    schedules: Optional[str] = Field(
+        description='Email of particular person.'
+    )
+    start_time: Optional[str] = Field(
+        description='Start time.'
+    )
+    end_time: Optional[str] = Field(
+        description='End time.'
+    )
+    timezone: Optional[str] = Field(
+        description='Timezone'
+    )

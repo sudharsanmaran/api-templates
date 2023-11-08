@@ -1,32 +1,9 @@
 from src.constants import AllActions
-from src.schemas import Template, FieldTemplate
-
-from .constants import SCOPES, REGEX
+from src.microsoft.constants import SCOPES, REGEX
+from src.schemas import Template
+from .base import create_field_template
 
 provider = 'microsoft'
-
-
-def create_field_template(
-        field_name, label, scenario, value='',
-        type_of='input', required=False, default='',
-        options=None, validator='', priority=1,
-        save_to_history=False
-):
-    if options is None:
-        options = []
-    return FieldTemplate(
-        field_name=field_name,
-        value=value,
-        label=label,
-        type=type_of,
-        required=required,
-        default=default,
-        options=options,
-        validator=validator,
-        scenario=scenario,
-        priority=priority,
-        save_to_history=save_to_history,
-    )
 
 
 def send_email():
@@ -133,6 +110,3 @@ def send_email():
         fields=fields,
     )
     return template
-
-
-templates = {AllActions.microsoft_send_email: send_email}

@@ -6,6 +6,7 @@ from src.schemas import Template, Form, ActionsForm
 from src.google.actions import actions as google_actions
 from src.google.templates import templates as google_templates
 from src.google.formfill import formfill_actions as google_formfill_actions
+from src.microsoft.formfill import formfill_actions as microsoft_formfill_actions
 from src.microsoft.actions import actions as microsoft_actions
 from src.microsoft.templates import templates as microsoft_templates
 from src.jira.actions import actions as jira_actions
@@ -31,6 +32,7 @@ all_templates = {
 all_fillform_actions = {
     **jira_formfill,
     **google_formfill_actions,
+    **microsoft_formfill_actions
 }
 
 router = APIRouter(prefix="/api/v1")
